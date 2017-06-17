@@ -47,10 +47,10 @@ try:
 									description="BOSWatch is a Python Script to recive and decode german BOS information with rtl_fm and multimon-NG",
 									epilog="More options you can find in the extern config.ini file in the folder /config")
 	# parser.add_argument("-c", "--channel", help="BOS Channel you want to listen")
-	parser.add_argument("-f", "--freq", help="Frequency you want to listen to", required=True)
-	parser.add_argument("-d", "--device", help="Device you want to use (check with rtl_test)", type=int, default=0)
+	parser.add_argument("-f", "--freq", help="Frequency you want to listen to", default="86.455")
+	parser.add_argument("-d", "--device", help="Device you want to use (check with rtl_test)", type=int, default=1)
 	parser.add_argument("-e", "--error", help="Frequency-error of your device in PPM", default=0)
-	parser.add_argument("-a", "--demod", help="Demodulation functions", choices=['FMS', 'ZVEI', 'POC512', 'POC1200', 'POC2400'], required=True, nargs="+")
+	parser.add_argument("-a", "--demod", help="Demodulation functions", choices=['FMS', 'ZVEI', 'POC512', 'POC1200', 'POC2400'], default="ZVEI", nargs="+")
 	parser.add_argument("-s", "--squelch", help="Level of squelch", type=int, default=0)
 	parser.add_argument("-g", "--gain", help="Level of gain", type=int, default=100)
 	parser.add_argument("-u", "--usevarlog", help="Use '/var/log/boswatch' for logfiles instead of subdir 'log' in BOSWatch directory", action="store_true")
@@ -303,15 +303,15 @@ try:
 		logging.debug("cannot load description lists", exc_info=True)
 
 	#
-	# Start rtl_fm
+	# Start Audio-LineIN as rtl_fm
 	#
 	try:
 		if not args.test:
 			logging.debug("starting rtl_fm")
 			command = ""
-			if globalVars.config.has_option("BOSWatch","rtl_path"):
-				command = globalVars.config.get("BOSWatch","rtl_path")
-			command = command+"rtl_fm -d "+str(args.device)+" -f "+str(freqConverter.freqToHz(args.freq))+" -M fm -p "+str(args.error)+" -E DC -F 0 -l "+str(args.squelch)+" -g "+str(args.gain)+" -s 22050"
+			# if globalVars.config.has_option("BOSWatch","rtl_path"):
+				# command = globalVars.config.get("BOSWatch","rtl_path")
+			command = command+"arecord -D plughw:"+str(args.device)+",0 -t raw -f S16_LE -r 22050"
 			rtl_fm = subprocess.Popen(command.split(),
 					#stdin=rtl_fm.stdout,
 					stdout=subprocess.PIPE,
@@ -320,7 +320,7 @@ try:
 			# rtl_fm doesn't self-destruct, when an error occurs
 			# wait a moment to give the subprocess a chance to write the logfile
 			time.sleep(3)
-			checkSubprocesses.checkRTL()
+			# checkSubprocesses.checkRTL()
 		else:
 			logging.warning("!!! Test-Mode: rtl_fm not started !!!")
 	except:
@@ -417,9 +417,9 @@ finally:
 		# Close Logging
 		logging.debug("close Logging")
 		# Waiting for all Threads to write there logs
-		if globalVars.config.getboolean("BOSWatch","processAlarmAsync") == True:
-			logging.debug("waiting 3s for threads...")
-			time.sleep(3)
+		# if globalVars.config.getboolean("BOSWatch","processAlarmAsync") == True:
+			# logging.debug("waiting 3s for threads...")
+			# time.sleep(3)
 		logging.info("BOSWatch exit()")
 		logging.shutdown()
 		if nmaHandler:

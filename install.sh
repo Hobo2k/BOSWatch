@@ -12,7 +12,7 @@ function exitcodefunction {
     echo "Action: $action on $module failed."
     echo "Exitcode: $errorcode"
     echo ""
-    echo " -> If you want to open an Issue at https://github.com/Schrolli91/BOSWatch/issues"
+    echo " -> If you want to open an Issue at https://github.com/Hobo2k/BOSWatch/issues"
     echo "    please post the logfile, located at $boswatchpath/install/setup_log.txt"
     exit 1
   else
@@ -30,6 +30,7 @@ echo "  / /_/ / /_/ /___/ /| |/ |/ / /_/ / /_/ /__/ / / / "
 echo " /_____/\____//____/ |__/|__/\__,_/\__/\___/_/ /_/  "
 echo "            German BOS Information Script           "
 echo "                 by Bastian Schroll                 "
+echo "             edited by Felix Schreiner              "
 echo ""
 
 # Make sure only root can run our script
@@ -191,11 +192,11 @@ echo "-> download BOSWatch..................."
 cd $boswatchpath/
 
 case $branch in
-  "dev") git clone -b develop https://github.com/Schrolli91/BOSWatch >> $boswatchpath/install/setup_log.txt 2>&1 && \
+  "dev") git clone -b develop https://github.com/Hobo2k/BOSWatch >> $boswatchpath/install/setup_log.txt 2>&1 && \
     exitcodefunction $? git-clone BOSWatch-develop ;;
-  "beta") git clone -b beta https://github.com/Schrolli91/BOSWatch >> $boswatchpath/install/setup_log.txt 2>&1 && \
+  "beta") git clone -b beta https://github.com/Hobo2k/BOSWatch >> $boswatchpath/install/setup_log.txt 2>&1 && \
     exitcodefunction $? git-clone BOSWatch-beta ;;
-  *) git clone -b master https://github.com/Schrolli91/BOSWatch >> $boswatchpath/install/setup_log.txt 2>&1 && \
+  *) git clone -b master https://github.com/Hobo2k/BOSWatch >> $boswatchpath/install/setup_log.txt 2>&1 && \
     exitcodefunction $? git-clone BOSWatch ;;
 esac
 
